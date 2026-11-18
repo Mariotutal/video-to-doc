@@ -36,12 +36,12 @@ dependencies = [
 anthropic = ["anthropic>=0.40"]
 openai = ["openai>=1.50"]
 urls = ["yt-dlp>=2024.3.10"]
-speakers = ["sherpa-onnx>=1.10.28", "numpy>=1.26"]
+speakers = ["sherpa-onnx>=2.0.1", "numpy>=1.26"]
 all = [
     "anthropic>=0.40",
     "openai>=1.50",
     "yt-dlp>=2024.3.10",
-    "sherpa-onnx>=1.10.28",
+    "sherpa-onnx>=2.0.1",
     "numpy>=1.26",
 ]
 dev = ["pytest>=8", "ruff>=0.5"]
