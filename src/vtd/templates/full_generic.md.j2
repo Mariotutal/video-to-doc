@@ -1,0 +1,33 @@
+{% import "_parts.md.j2" as parts with context -%}
+# {{ manifest.source_video | basename }} — {{ t.notes }}
+
+> {{ t.intro_generic.format(provider=provider_name, model=config.ai.model) }}
+
+## {{ t.source }}
+
+{{ parts.source_table() }}
+
+{% if voices or speakers %}## {{ t.participants if voices else t.labels_detected }}
+
+{{ parts.people() }}
+
+{% endif %}## {{ t.sections }}
+
+{{ parts.outline(t.frames_referenced) }}
+
+## {{ t.themes }}
+
+{{ themes_md }}
+
+## {{ t.followups }}
+
+{{ parts.bullets(followups) }}
+
+## {{ t.glossary }}
+
+{{ parts.glossary_table() }}
+
+## {{ t.section_timeline }}
+
+{{ parts.timeline() }}
+{{- parts.bibliography() }}

@@ -1,0 +1,38 @@
+.venv/
+.venv*/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+
+# Workspaces produced by vtd
+*.vtd/
+
+# Model cache (could be ~1.5 GB)
+models/
+
+# Keys
+.env
+.env.*
+
+# Recordings, and notes exported from them
+*.mp4
+*.mkv
+*.mov
+*.webm
+*.avi
+*.mp3
+*.m4a
+*.wav
+*.ogg
+*.vtt
+*.pdf
+
+# Local config
+.vscode/
+.idea/
+*.swp
+.DS_Store

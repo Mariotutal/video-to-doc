@@ -1,0 +1,29 @@
+{% import "_parts.md.j2" as parts with context -%}
+# {{ manifest.source_video | basename }} — {{ t.podcast_notes }}
+
+> {{ t.intro_podcast.format(provider=provider_name, model=config.ai.model) }}
+
+## {{ t.episode }}
+
+{{ parts.source_table() }}
+
+## {{ t.topics_covered }}
+
+{{ parts.outline(none) }}
+
+## {{ t.notable_themes }}
+
+{{ themes_md }}
+
+## {{ t.mentions }}
+
+{{ parts.bullets(followups) }}
+
+## {{ t.glossary }}
+
+{{ parts.glossary_table() }}
+
+## {{ t.section_timeline }}
+
+{{ parts.timeline() }}
+{{- parts.bibliography() }}
