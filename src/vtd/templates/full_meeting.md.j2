@@ -1,0 +1,41 @@
+{% import "_parts.md.j2" as parts with context -%}
+# {{ manifest.source_video | basename }} — {{ t.analytical_notes }}
+
+> {{ t.intro_meeting.format(provider=provider_name, model=config.ai.model) }}
+
+## {{ t.source }}
+
+{{ parts.source_table() }}
+
+## {{ t.participants }}
+
+{{ parts.people() }}
+
+## {{ t.sections }}
+
+{{ parts.outline(t.frames_referenced) }}
+
+## {{ t.themes }}
+
+{{ themes_md }}
+
+## {{ t.followups }}
+
+{{ parts.bullets(followups) }}
+
+## {{ t.glossary }}
+
+{{ parts.glossary_table() }}
+
+## {{ t.section_timeline }}
+
+{{ parts.timeline() }}
+
+## {{ t.references }}
+
+- {{ t.ref_workspace }}
+- {{ t.ref_transcript }}: `transcript.txt`, `transcript.vtt`.
+- {{ t.ref_frames }}: `frames/`.
+- {{ t.ref_manifest }}: `manifest.json`.
+- {{ t.ref_cache }}
+{{- parts.bibliography("\n") }}

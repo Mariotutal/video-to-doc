@@ -1,0 +1,29 @@
+{% import "_parts.md.j2" as parts with context -%}
+# {{ manifest.source_video | basename }} — {{ t.lecture_notes }}
+
+> {{ t.intro_lecture.format(provider=provider_name, model=config.ai.model) }}
+
+## {{ t.source }}
+
+{{ parts.source_table() }}
+
+## {{ t.lecture_outline }}
+
+{{ parts.outline(t.slides_referenced) }}
+
+## {{ t.key_concepts }}
+
+{{ themes_md }}
+
+## {{ t.glossary }}
+
+{{ parts.glossary_table() }}
+
+## {{ t.exercises }}
+
+{{ parts.bullets(followups) }}
+
+## {{ t.section_timeline }}
+
+{{ parts.timeline() }}
+{{- parts.bibliography() }}

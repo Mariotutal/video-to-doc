@@ -1,0 +1,67 @@
+# {{ workspace_name }} — {{ t.starter_notes }}
+
+> {{ t.starter_intro.format(notes=config.output_doc_name) }}
+
+## {{ t.source }}
+
+| {{ t.field }} | {{ t.value }} |
+|---|---|
+| {{ t.source }} | `{{ manifest.source_video }}` |
+| {{ t.duration }} | {{ manifest.duration_seconds | hms }} |
+| {{ t.type }} | {% if manifest.has_video %}{{ t.audio_video }}{% else %}{{ t.audio_only }}{% endif %} |
+{% if manifest.has_video %}| {{ t.resolution }} | {% if manifest.width and manifest.height %}{{ manifest.width }}×{{ manifest.height }}{% else %}{{ t.unknown }}{% endif %} |
+| {{ t.frame_sample_rate }} | {{ t.frame_every.format(seconds=built.frame_rate_seconds) }} |
+{% endif %}| {{ t.transcript_source }} | {{ transcript_source }} |
+| {{ t.created }} | {{ manifest.created_utc }} |
+| {{ t.updated }} | {{ manifest.updated_utc }} |
+| {{ t.stages_completed }} | {{ manifest.stages_completed | join(", ") }} |
+
+{% if manifest.has_video %}## {{ t.labels_detected }} ({{ speakers | length }})
+
+{% if speakers -%}
+| # | {{ t.name }} | {{ t.first_seen }} | {{ t.last_seen }} | {{ t.frame_count }} |
+|---|------|-----------:|----------:|------------:|
+{% for s in speakers -%}
+| {{ loop.index }} | {{ s.name }} | {{ s.first_seen_s | hms }} | {{ s.last_seen_s | hms }} | {{ s.frame_count }} |
+{% endfor %}
+{%- else -%}
+_{{ t.no_labels }}_
+{%- endif %}
+
+{% endif %}{% if voices -%}
+_{{ t.voices_marked.format(count=voices) }}_
+{%- elif not speakers -%}
+_{{ t.unattributed }}_
+{%- endif %}
+
+## {{ t.section_timeline }} ({{ sections | length }})
+
+{% if sections -%}
+| # | {{ t.start }} | {{ t.end }} | {{ t.duration }} | {{ t.cues }} | {{ t.notes_column }} |
+|---|------:|----:|---------:|-----:|-------|
+{% for s in sections -%}
+| {{ s.index + 1 }} | {{ s.start_s | hms }} | {{ s.end_s | hms }} | {{ s.duration_s | hms }} | {{ s.cue_count }} | {% if s.is_silent %}{{ t.silent }}{% else %}{{ t.content }}{% endif %} |
+{% endfor %}
+{%- else -%}
+_{{ t.no_sections }}_
+{%- endif %}
+
+## {{ t.frames_sampled }} ({{ frames | length }})
+
+{% if frames -%}
+{{ t.frames_intro.format(count=frames | length) }}
+{% for f in frames[:8] -%}
+- `{{ f }}`
+{% endfor %}
+{%- if frames | length > 8 %}
+{{ t.and_more.format(count=frames | length - 8) }}
+{%- endif %}
+{%- else -%}
+_{{ t.no_frames }}_
+{%- endif %}
+
+## {{ t.transcript }}
+
+```
+{{ transcript }}
+```

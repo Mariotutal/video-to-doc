@@ -1,0 +1,102 @@
+{#- Parts every full document shares, so the four content types cannot drift apart. -#}
+{% macro source_table() -%}
+| {{ t.field }} | {{ t.value }} |
+|---|---|
+| {{ t.source }} | `{{ manifest.source_video }}` |
+| {{ t.duration }} | {{ manifest.duration_seconds | hms }} |
+| {{ t.type }} | {% if manifest.has_video %}{{ t.audio_video }}{% else %}{{ t.audio_only }}{% endif %} |
+{% if manifest.has_video %}| {{ t.resolution }} | {% if manifest.width and manifest.height %}{{ manifest.width }}×{{ manifest.height }}{% else %}{{ t.unknown }}{% endif %} |
+| {{ t.frame_sample_rate }} | {{ t.frame_every.format(seconds=built.frame_rate_seconds) }} |
+{% endif %}| {{ t.language }} | {{ manifest.detected_language or config.language }} |
+| {{ t.transcript_source }} | {{ transcript_source }} |
+| {{ t.ai_provider_model }} | `{{ provider_name }}` · `{{ config.ai.model }}` |
+| {{ t.content_type }} | `{{ config.content_type }}` |
+{%- endmacro %}
+
+{% macro outline(frames_label) -%}
+{% for c in chapters -%}
+{% if c.title -%}
+### {{ c.title }}  ·  [{{ c.start_s | hms }} – {{ c.end_s | hms }}]
+
+{% endif -%}
+{% for s in c.sections -%}
+{{ s.heading }} {{ s.number }}. {{ s.title }}  ·  [{{ s.start_s | hms }} – {{ s.end_s | hms }}]
+
+{{ s.body }}
+
+{% if frames_label and s.frames %}_{{ frames_label }}:_ {% for f in s.frames %}`{{ f }}`{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+
+{% endfor %}
+{% endfor %}
+{%- endmacro %}
+
+{% macro bullets(items) -%}
+{% if items -%}
+{% for item in items -%}
+- {{ item }}
+{% endfor %}
+{%- else -%}
+_{{ t.none_detected }}_
+{%- endif %}
+{%- endmacro %}
+
+{% macro glossary_table() -%}
+{% if glossary -%}
+| {{ t.term }} | {{ t.definition }} |
+|------|------------|
+{% for g in glossary -%}
+| **{{ g.term }}** | {{ g.definition }} |
+{% endfor %}
+{%- else -%}
+_{{ t.no_glossary }}_
+{%- endif %}
+{%- endmacro %}
+
+{% macro timeline() -%}
+| # | {{ t.start }} | {{ t.end }} | {{ t.duration }} | {{ t.title }} |
+|--|------:|------:|-------:|----------------------------------------|
+{% for s in sections -%}
+| {{ s.number or "—" }} | {{ s.start_s | hms }} | {{ s.end_s | hms }} | {{ s.duration_s | hms }} | {{ s.title }} |
+{% endfor %}
+{%- endmacro %}
+
+{#- Speakers told apart by voice, then the names read on screen: both, when both exist. -#}
+{% macro people() -%}
+{% for v in voices -%}
+- **{{ v.name }}** — {{ t.voice_heard.format(time=v.spoke_s | hms, first=v.first_s | hms) }}
+{% endfor -%}
+{% for s in speakers -%}
+- **{{ s.name }}** — {{ t.speaker_seen.format(time=s.first_seen_s | hms, count=s.frame_count) }}
+{% endfor -%}
+{% if not voices and not speakers -%}
+_{{ t.no_speakers }}_
+{%- endif %}
+{%- endmacro %}
+
+{#- With --references: the works found in a catalog, then the footnotes the sections point to. -#}
+{#- `lead` is what must come before the heading where the document does not end in a blank line. -#}
+{% macro bibliography(lead="") -%}
+{% if works is not none %}{{ lead }}
+## {{ t.bibliography }}
+
+{{ t.bibliography_note }}
+
+### {{ t.works_mentioned }}
+
+{% for w in works.cited -%}
+- {{ w.citation }} (§{{ w.sections | join(", §") }})
+{% else -%}
+_{{ t.none_detected }}_
+{% endfor %}
+### {{ t.further_reading }}
+
+{% for citation in works.further -%}
+- {{ citation }}
+{% else -%}
+_{{ t.none_detected }}_
+{% endfor -%}
+{% for w in works.cited %}
+[^{{ w.number }}]: {{ w.citation }}
+{% endfor -%}
+{% endif %}
+{%- endmacro %}
