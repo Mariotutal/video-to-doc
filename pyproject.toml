@@ -44,7 +44,7 @@ all = [
     "sherpa-onnx>=1.10.28",
     "numpy>=1.26",
 ]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.17.6"]
 
 [project.urls]
 Homepage = "https://github.com/Mariotutal/video-to-doc"
